@@ -1,3 +1,5 @@
+import { postAudio } from "../api";
+
 class MicInput extends HTMLElement {
   constructor() {
     super();
@@ -5,12 +7,13 @@ class MicInput extends HTMLElement {
     this.mediaRecorder = undefined;
     this.chunks = [];
     this.attachShadow({ mode: "open" });
+    this.toggleRecordingBound = this.toggleRecording.bind(this);
     this.render();
   }
 
   toggleRecording() {
     this.recording = !this.recording;
-    if (this.recording) this.startRecording();
+    if (this.recording) this.mediaRecorder.start();
     if (!this.recording) this.mediaRecorder.stop();
     this.render();
   }
@@ -25,21 +28,22 @@ class MicInput extends HTMLElement {
 		  </div>
 		  `;
     this.recordButton = this.shadowRoot.querySelector(".record");
-    this.recordButton.removeEventListener("click", () => this.toggleRecording);
-    this.recordButton.addEventListener("click", () => this.toggleRecording());
+    this.recordButton.removeEventListener("click", this.toggleRecordingBound);
+    this.recordButton.addEventListener("click", this.toggleRecordingBound);
   }
 
   connectedCallback() {
+    this.initRecording();
     this.render();
   }
 
   disconnectedCallback() {
     // Clean up
     if (this.recordButton)
-      this.recordButton.removeEventListener("click", this.toggleRecording);
+      this.recordButton.removeEventListener("click", this.toggleRecordingBound);
   }
 
-  startRecording() {
+  initRecording() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       console.log("getUserMedia supported.");
       navigator.mediaDevices
@@ -57,7 +61,7 @@ class MicInput extends HTMLElement {
             const blob = new Blob(this.chunks, { type: "audio/wav" });
             this.chunks = [];
             // call to endpoint here
-            // postAudio(blob, "");
+            postAudio(blob);
           };
         })
         .catch((err) => console.log("Failed to get microphone", err));

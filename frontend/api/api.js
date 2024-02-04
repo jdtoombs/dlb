@@ -5,7 +5,8 @@
  * @param {string} url The URL of the API endpoint.
  * @returns {Promise<Response>} The response from the fetch request.
  */
-export async function postAudio(audioBlob, url) {
+export async function postAudio(audioBlob) {
+  const url = "http://localhost:5000/openai/transcribe";
   let formData = new FormData();
   formData.append("audio", audioBlob, "audio.wav");
 

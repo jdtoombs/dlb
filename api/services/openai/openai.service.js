@@ -8,10 +8,10 @@ const openaiService = {};
 openaiService.transcribeAudio = async (audio) => {
   console.log("Transcribing audio...", audio);
   const transcription = await openai.audio.transcriptions.create({
-    file: fs.createReadStream("test.mp3"),
+    file: fs.createReadStream(audio),
     model: "whisper-1",
   });
-  return transcripton.text;
+  return transcription.text;
 };
 
 export default openaiService;
