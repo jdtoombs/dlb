@@ -1,5 +1,3 @@
-import { postAudio } from "./api.js";
-
 class MicInput extends HTMLElement {
   constructor() {
     super();
