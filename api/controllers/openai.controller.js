@@ -3,8 +3,8 @@ import openaiService from "../services/openai/openai.service.js";
 const controller = {};
 
 controller.transcribe = async (req, res) => {
-  const { audio } = req.body;
-  const { transcript } = await openaiService.transcribeAudio(audio);
+  const filePath = req.file.path;
+  const { transcript } = await openaiService.transcribeAudio(filePath);
   res.json({ transcript });
 };
 
