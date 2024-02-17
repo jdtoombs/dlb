@@ -49,7 +49,9 @@ class MicInput extends HTMLElement {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
-          this.mediaRecorder = new MediaRecorder(stream);
+          this.mediaRecorder = new MediaRecorder(stream, {
+            mimeType: "audio/webm",
+          });
           this.mediaRecorder.onstart = () => {
             console.log("recording started");
           };
@@ -58,7 +60,7 @@ class MicInput extends HTMLElement {
           };
           this.mediaRecorder.onstop = () => {
             console.log("recording stopped");
-            const blob = new Blob(this.chunks, { type: "audio/wav" });
+            const blob = new Blob(this.chunks, { type: "audio/webm" });
             this.chunks = [];
             // call to endpoint here
             postAudio(blob);
