@@ -1,6 +1,7 @@
 import "dotenv/config";
 import OpenAI from "openai";
 import fs from "fs";
+import { fileTypeFromStream } from "file-type";
 
 const openai = new OpenAI({ apiKey: process.env.OPEN_API_KEY });
 const openaiService = {};
@@ -25,12 +26,21 @@ const sleep = (ms) => {
  * @returns {string} - The transcribed text
  */
 openaiService.transcribeAudio = async (audio, retries = 3, delay = 1000) => {
+  const stream = fs.createReadStream(audio);
+  const type = await fileTypeFromStream(stream);
+  console.log(type);
+  stream.on("error", (err) => {
+    console.log("Error reading audio file:", err);
+  });
+  stream.on("readable", () => {
+    console.log("readable");
+  });
   console.log("Transcribing audio...", audio);
   while (retries > 0) {
     try {
       // timing out here
       const transcription = await openai.audio.transcriptions.create({
-        file: fs.createReadStream(audio),
+        file: stream,
         model: "whisper-1",
       });
       return transcription.text;

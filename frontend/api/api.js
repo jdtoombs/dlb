@@ -8,7 +8,7 @@
 export async function postAudio(audioBlob) {
   const url = "http://localhost:5000/openai/transcribe";
   let formData = new FormData();
-  formData.append("audio", audioBlob, "audio.wav");
+  formData.append("audio", audioBlob, "audio.webm");
 
   try {
     const response = await fetch(url, {
